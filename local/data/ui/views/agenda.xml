@@ -1,0 +1,77 @@
+<form script="autodiscover.js">&gt;<label>Agenda</label>
+  <fieldset submitButton="false" autoRun="true">
+    <input type="radio" token="date" searchWhenChanged="true">
+      <label>Day</label>
+      <default>2015-09-22</default>
+      <choice value="2015-09-22">Tuesday</choice>
+      <choice value="2015-09-23">Wednesday</choice>
+      <choice value="2015-09-24">Thursday</choice>
+    </input>
+    <input type="multiselect" token="skillLevel" searchWhenChanged="true">
+      <label>Skill Level</label>
+      <search>
+        <query>|inputlookup confSessions | dedup skillLevel</query>
+      </search>
+      <fieldForLabel>skillLevel</fieldForLabel>
+      <fieldForValue>skillLevel</fieldForValue>
+      <valuePrefix>skillLevel="</valuePrefix>
+      <valueSuffix>"</valueSuffix>
+      <delimiter> OR </delimiter>
+      <choice value="*">ALL</choice>
+      <default>*</default>
+    </input>
+    <input type="multiselect" token="track">
+      <label>Track</label>
+      <search>
+        <query>|inputlookup confSessions | dedup track</query>
+      </search>
+      <fieldForLabel>track</fieldForLabel>
+      <fieldForValue>track</fieldForValue>
+      <valuePrefix>track="</valuePrefix>
+      <valueSuffix>"</valueSuffix>
+      <delimiter> OR </delimiter>
+      <choice value="*">ALL</choice>
+      <default>*</default>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <html>
+       <div id="demo-view" class="splunk-view" data-require="app/dotconf2015/components/gantt/gantt" data-options="{ &quot;managerid&quot;: &quot;agenda&quot;,                      &quot;startField&quot;: &quot;_time&quot;,                      &quot;durationField&quot;: &quot;duration&quot;,                      &quot;categoryLabel&quot;: &quot;type&quot;,                      &quot;categoryField&quot;: &quot;type&quot;,                      &quot;seriesLabel&quot;: &quot;track&quot;,                      &quot;seriesField&quot;: &quot;track&quot;,                      &quot;extrasField&quot; : &quot;extra&quot;,                      &quot;timeAxisMode&quot; : &quot;DATA_RANGE&quot;,                      &quot;tokenName&quot;: &quot;title&quot;,                      &quot;tokenField&quot;: &quot;title&quot;}"/>        
+      </html>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$hidden$">
+      <table>
+        <search id="agenda">
+          <query>|inputlookup confSessions | search startDate="$date$"  $skillLevel$ $track$ | convert timeformat="%F %H:%M" mktime(startTime) AS _time | convert timeformat="%F %H:%M" mktime(endTime)             | eval duration=endTime-_time  | eval extra="{\"title\":\""+title+"\",\"Skill Level\":\""+skillLevel+"\"}" | table startTime duration title track type _time extra</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="wrap">true</option>
+        <option name="rowNumbers">false</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="count">10</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel depends="$title$">
+      <title>$title$</title>
+      <table>
+        <search>
+          <query>|inputlookup confSessions | search title="$title$" | table description</query>
+          <earliest>0</earliest>
+        </search>
+        <option name="wrap">true</option>
+        <option name="rowNumbers">false</option>
+        <option name="drilldown">none</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="linkView">search</option>
+        <option name="count">10</option>
+      </table>
+    </panel>
+  </row>
+</form>
