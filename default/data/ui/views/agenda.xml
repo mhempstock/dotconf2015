@@ -33,11 +33,36 @@
       <choice value="*">ALL</choice>
       <default>*</default>
     </input>
+    <input type="multiselect" token="products" searchWhenChanged="true">
+      <label>Product</label>
+      <choice value="*">ALL</choice>
+      <search>
+        <query>|inputlookup confSessions | makemv products delim=";;" |mvexpand products | dedup products</query>
+      </search>
+      <fieldForLabel>products</fieldForLabel>
+      <fieldForValue>products</fieldForValue>
+      <default>*</default>
+      <valuePrefix>products="*</valuePrefix>
+      <valueSuffix>*"</valueSuffix>
+      <delimiter> AND </delimiter>
+    </input>
   </fieldset>
   <row>
     <panel>
       <html>
-       <div id="demo-view" class="splunk-view" data-require="app/dotconf2015/components/gantt/gantt" data-options="{ &quot;managerid&quot;: &quot;agenda&quot;,                      &quot;startField&quot;: &quot;_time&quot;,                      &quot;durationField&quot;: &quot;duration&quot;,                      &quot;categoryLabel&quot;: &quot;type&quot;,                      &quot;categoryField&quot;: &quot;type&quot;,                      &quot;seriesLabel&quot;: &quot;track&quot;,                      &quot;seriesField&quot;: &quot;track&quot;,                      &quot;extrasField&quot; : &quot;extra&quot;,                      &quot;timeAxisMode&quot; : &quot;DATA_RANGE&quot;,                      &quot;tokenName&quot;: &quot;title&quot;,                      &quot;tokenField&quot;: &quot;title&quot;}"/>        
+        <p>Click on item to view more details of session</p>
+                      <div id="demo-view" class="splunk-view" data-require="app/dotconf2015/components/gantt/gantt" 
+                     data-options='{ "managerid": "agenda",
+                     "startField": "_time",
+                     "durationField": "duration",
+                     "categoryLabel": "type",
+                     "categoryField": "type",
+                     "seriesLabel": "track",
+                     "seriesField": "track",
+                     "extrasField" : "title",
+                     "timeAxisMode" : "DATA_RANGE",
+                     "tokenName": "Session_ID",
+                     "tokenField": "Session_ID"}'/>
       </html>
     </panel>
   </row>
@@ -45,7 +70,7 @@
     <panel depends="$hidden$">
       <table>
         <search id="agenda">
-          <query>|inputlookup confSessions | search startDate="$date$"  $skillLevel$ $track$ | convert timeformat="%F %H:%M" mktime(startTime) AS _time | convert timeformat="%F %H:%M" mktime(endTime)             | eval duration=endTime-_time  | eval extra="{\"title\":\""+title+"\",\"Skill Level\":\""+skillLevel+"\"}" | table startTime duration title track type _time extra</query>
+          <query>|inputlookup confSessions | search startDate="$date$"  $skillLevel$ $track$ $products$  | convert timeformat="%F %H:%M" mktime(startTime) AS _time | convert timeformat="%F %H:%M" mktime(endTime)             | eval duration=endTime-_time | eval extra="{\"title\":\""+title+"\",\"Skill Level\":\""+skillLevel+"\",\"Location\":\""+location+"\"}" | table startTime duration title track type _time extra Session_ID</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
@@ -58,12 +83,12 @@
     </panel>
   </row>
   <row>
-    <panel depends="$title$">
-      <title>$title$</title>
+    <panel depends="$Session_ID$">
       <table>
         <search>
-          <query>|inputlookup confSessions | search title="$title$" | table description</query>
+          <query>|inputlookup confSessions | search Session_ID="$Session_ID$" | table startTime endTime title description  location speakers |makemv speakers delim=";;"</query>
           <earliest>0</earliest>
+          <latest></latest>
         </search>
         <option name="wrap">true</option>
         <option name="rowNumbers">false</option>
