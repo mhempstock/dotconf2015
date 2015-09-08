@@ -1,80 +1,80 @@
 <form script="autodiscover.js">&gt;<label>Agenda</label>
-  <fieldset submitButton="false" autoRun="true"/>
-    <row>
-      <panel>
-          <input type="radio" token="date" searchWhenChanged="true">
-      <label>Day</label>
-      <default>2015-09-22</default>
-      <choice value="2015-09-22">Tuesday</choice>
-      <choice value="2015-09-23">Wednesday</choice>
-      <choice value="2015-09-24">Thursday</choice>
-    </input>
-    <input type="multiselect" token="skillLevel" searchWhenChanged="true">
-      <label>Skill Level</label>
-      <search>
-        <query>|inputlookup confSessions | dedup skillLevel</query>
-      </search>
-      <fieldForLabel>skillLevel</fieldForLabel>
-      <fieldForValue>skillLevel</fieldForValue>
-      <valuePrefix>skillLevel="</valuePrefix>
-      <valueSuffix>"</valueSuffix>
-      <delimiter> OR </delimiter>
-      <choice value="*">ALL</choice>
-      <default>*</default>
-    </input>
-    <input type="multiselect" token="track">
-      <label>Track</label>
-      <search>
-        <query>|inputlookup confSessions | dedup track</query>
-      </search>
-      <fieldForLabel>track</fieldForLabel>
-      <fieldForValue>track</fieldForValue>
-      <valuePrefix>track="</valuePrefix>
-      <valueSuffix>"</valueSuffix>
-      <delimiter> OR </delimiter>
-      <choice value="*">ALL</choice>
-      <default>*</default>
-    </input>
-    <input type="multiselect" token="products" searchWhenChanged="true">
-      <label>Product</label>
-      <choice value="*">ALL</choice>
-      <search>
-        <query>|inputlookup confSessions | makemv products delim=";;" |mvexpand products | dedup products</query>
-      </search>
-      <fieldForLabel>products</fieldForLabel>
-      <fieldForValue>products</fieldForValue>
-      <default>*</default>
-      <valuePrefix>products="*</valuePrefix>
-      <valueSuffix>*"</valueSuffix>
-      <delimiter> AND </delimiter>
-    </input>
-    <input type="multiselect" token="ownSessions" searchWhenChanged="true">
-      <label>Own Sessions</label>
-      <search>
-        <query>|inputlookup confSessions | dedup title</query>
-      </search>
-      <fieldForLabel>title</fieldForLabel>
-      <fieldForValue>Session_ID</fieldForValue>
-      <valuePrefix>Session_ID="</valuePrefix>
-      <valueSuffix>"</valueSuffix>
-      <delimiter> OR </delimiter>
-      <choice value="">None</choice>
-      <default></default>
-    </input>
-      </panel>
-      <panel>
-        <html>
+  <row>
+    <panel>
+      <input type="radio" token="date" searchWhenChanged="true">
+        <label>Day</label>
+        <default>2015-09-22</default>
+        <choice value="2015-09-22">Tuesday</choice>
+        <choice value="2015-09-23">Wednesday</choice>
+        <choice value="2015-09-24">Thursday</choice>
+      </input>
+      <input type="multiselect" token="skillLevel" searchWhenChanged="true">
+        <label>Skill Level</label>
+        <search>
+          <query>|inputlookup confSessions | dedup skillLevel</query>
+        </search>
+        <fieldForLabel>skillLevel</fieldForLabel>
+        <fieldForValue>skillLevel</fieldForValue>
+        <valuePrefix>skillLevel="</valuePrefix>
+        <valueSuffix>"</valueSuffix>
+        <delimiter> OR </delimiter>
+        <choice value="*">ALL</choice>
+        <default>*</default>
+      </input>
+      <input type="multiselect" token="track">
+        <label>Track</label>
+        <search>
+          <query>|inputlookup confSessions | dedup track</query>
+        </search>
+        <fieldForLabel>track</fieldForLabel>
+        <fieldForValue>track</fieldForValue>
+        <valuePrefix>track="</valuePrefix>
+        <valueSuffix>"</valueSuffix>
+        <delimiter> OR </delimiter>
+        <choice value="*">ALL</choice>
+        <default>*</default>
+      </input>
+      <input type="multiselect" token="products" searchWhenChanged="true">
+        <label>Product</label>
+        <choice value="*">ALL</choice>
+        <search>
+          <query>|inputlookup confSessions | makemv products delim=";;" |mvexpand products | dedup products</query>
+        </search>
+        <fieldForLabel>products</fieldForLabel>
+        <fieldForValue>products</fieldForValue>
+        <default>*</default>
+        <valuePrefix>products="*</valuePrefix>
+        <valueSuffix>*"</valueSuffix>
+        <delimiter> AND </delimiter>
+      </input>
+      <input type="multiselect" token="ownSessions" searchWhenChanged="true">
+        <label>Planned Sessions</label>
+        <search>
+          <query>|inputlookup confSessions | dedup title</query>
+        </search>
+        <fieldForLabel>title</fieldForLabel>
+        <fieldForValue>Session_ID</fieldForValue>
+        <valuePrefix>Session_ID="</valuePrefix>
+        <valueSuffix>"</valueSuffix>
+        <delimiter> OR </delimiter>
+        <choice value="">None</choice>
+        <default></default>
+      </input>
+    </panel>
+    <panel>
+      <html>
           <h1>Instructions</h1>
           <ul>
           <li>Use the filters to view the agenda</li>
             <li>Use the "Planned Sessions" Menu to add your planned sessions to the bottom of the gantt</li>
             <li>Clicking on the Gantt idem will drilldown to more data.</li>
-            <li>Click here to open a new window with your conference Plan (This bits coming soon)</li>
+            <li>
+            <a href="planned_sessions?form.ownSessions=$form.ownSessions$">Click here to open a new window with your Conference Plan</a>
+          </li>
           </ul>
         </html>
-      </panel>
+    </panel>
   </row>
-  
   <row>
     <panel>
       <html>
@@ -90,7 +90,7 @@
                      "extrasField" : "extra",
                      "timeAxisMode" : "DATA_RANGE",
                      "tokenName": "Session_ID",
-                     "tokenField": "Session_ID"}'/>              
+                     "tokenField": "Session_ID"}'/> 
       </html>
     </panel>
   </row>
