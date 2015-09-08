@@ -1,4 +1,5 @@
-<form script="autodiscover.js">&gt;<label>Agenda</label>
+<form script="autodiscover.js">
+<label>Agenda</label>
   <fieldset submitButton="false" autoRun="true">
     <input type="radio" token="date" searchWhenChanged="true">
       <label>Day</label>
@@ -46,12 +47,25 @@
       <valueSuffix>*"</valueSuffix>
       <delimiter> AND </delimiter>
     </input>
+    <input type="multiselect" token="ownSessions" searchWhenChanged="true">
+      <label>Own Sessions</label>
+      <search>
+        <query>|inputlookup confSessions | dedup title</query>
+      </search>
+      <fieldForLabel>title</fieldForLabel>
+      <fieldForValue>Session_ID</fieldForValue>
+      <valuePrefix>Session_ID="</valuePrefix>
+      <valueSuffix>"</valueSuffix>
+      <delimiter> OR </delimiter>
+      <choice value="">None</choice>
+      <default></default>
+    </input>
   </fieldset>
   <row>
     <panel>
       <html>
         <p>Click on item to view more details of session</p>
-                      <div id="demo-view" class="splunk-view" data-require="app/dotconf2015/components/gantt/gantt" 
+      <div id="demo-view" class="splunk-view" data-require="app/dotconf2015/components/gantt/gantt" 
                      data-options='{ "managerid": "agenda",
                      "startField": "_time",
                      "durationField": "duration",
@@ -59,10 +73,10 @@
                      "categoryField": "type",
                      "seriesLabel": "track",
                      "seriesField": "track",
-                     "extrasField" : "title",
+                     "extrasField" : "extra",
                      "timeAxisMode" : "DATA_RANGE",
                      "tokenName": "Session_ID",
-                     "tokenField": "Session_ID"}'/>
+                     "tokenField": "Session_ID"}'/>              
       </html>
     </panel>
   </row>
@@ -70,14 +84,14 @@
     <panel depends="$hidden$">
       <table>
         <search id="agenda">
-          <query>|inputlookup confSessions | search startDate="$date$"  $skillLevel$ $track$ $products$  | convert timeformat="%F %H:%M" mktime(startTime) AS _time | convert timeformat="%F %H:%M" mktime(endTime)             | eval duration=endTime-_time | eval extra="{\"title\":\""+title+"\",\"Skill Level\":\""+skillLevel+"\",\"Location\":\""+location+"\"}" | table startTime duration title track type _time extra Session_ID</query>
+          <query>|inputlookup confSessions | search startDate="$date$"  $skillLevel$ $track$ $products$   | append [|inputlookup confSessions |search startDate="$date$" $ownSessions$| eval type="Own Plan"]  | convert timeformat="%F %H:%M" mktime(startTime) AS _time | convert timeformat="%F %H:%M" mktime(endTime)             | eval duration=endTime-_time | eval extra="{\"title\":\""+title+"\",\"Skill Level\":\""+skillLevel+"\",\"Location\":\""+location+"\"}" | table startTime duration title track type _time extra Session_ID</query>
           <earliest>0</earliest>
           <latest></latest>
         </search>
         <option name="wrap">true</option>
         <option name="rowNumbers">false</option>
         <option name="dataOverlayMode">none</option>
-        <option name="drilldown">cell</option>
+        <option name="drilldown">none</option>
         <option name="count">10</option>
       </table>
     </panel>

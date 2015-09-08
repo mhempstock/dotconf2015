@@ -6,6 +6,6 @@ I got the dataset using a combination of https://conf.splunk.com/speakers.html a
 
 ###screenshots
 ![Screenshot 1](https://raw.githubusercontent.com/stash1001/dotconf2015/master/appserver/static/Screenshot1.png "Screenshot 1")
-![Screenshot 2](https://raw.githubusercontent.com/stash1001/dotconf2015/master/appserver/static/screenshot2.png "Screenshot 2")
+![Screenshot 2](https://raw.githubusercontent.com/stash1001/dotconf2015/master/appserver/static/Screenshot2.png "Screenshot 2")
 
 Credits go to Alex Iribarren for creating the Ganntt Chart which can be found here https://splunkbase.splunk.com/app/1741/ 
