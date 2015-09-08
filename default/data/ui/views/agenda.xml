@@ -69,9 +69,10 @@
             <li>Use the "Planned Sessions" Menu to add your planned sessions to the bottom of the gantt</li>
             <li>Clicking on the Gantt idem will drilldown to more data.</li>
             <li>
-            <a href="planned_sessions?form.ownSessions=$form.ownSessions$">Click here to open a new window with your Conference Plan</a>
+            <a target="_blank" href="planned_sessions?form.ownSessions=$form.ownSessions$">Click here to open a new window with your Conference Plan and Export to PDF</a>
           </li>
           </ul>
+        <b>If you want to save this page for later copy the URL</b>
         </html>
     </panel>
   </row>
