@@ -1,5 +1,5 @@
 While planning my conference sessions for .conf2015 I decided it would be fun and easier to do this in Splunk.  
-The app allows you to view,filter and plan your sessions a Gantt chart.  
+This Splunk app allows you to view,filter and plan your sessions from Splunk .Conf2015 
 
 I got the dataset using a combination of https://conf.splunk.com/speakers.html and the Agenda planner.  The raw data was then passed into splunk and correlated to build the csv file found in the lookups directory.
 
