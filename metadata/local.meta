@@ -16,7 +16,7 @@ modtime = 1441638974.790038000
 [views/agenda]
 owner = admin
 version = 6.2.5
-modtime = 1441702998.629222000
+modtime = 1441724355.425371000
 
 [transforms/confSessions]
 access = read : [ * ]
