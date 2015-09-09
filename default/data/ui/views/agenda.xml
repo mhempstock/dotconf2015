@@ -7,6 +7,7 @@
         <choice value="2015-09-22">Tuesday</choice>
         <choice value="2015-09-23">Wednesday</choice>
         <choice value="2015-09-24">Thursday</choice>
+        <choice value="*">All Days</choice>
         <change>
           <condition value="2015-09-22">
             <set token="earliest">1442901600</set>
@@ -18,6 +19,10 @@
           </condition>
           <condition value="2015-09-24">
             <set token="earliest">1443074400</set>
+            <set token="latest">1443121200</set>
+          </condition>
+          <condition value="*">
+            <set token="earliest">1442901600</set>
             <set token="latest">1443121200</set>
           </condition>
         </change>
@@ -80,8 +85,8 @@
           <h1>Instructions</h1>
           <ul>
           <li>Use the filters to view the agenda</li>
-            <li>Use the "Planned Sessions" Menu to add your planned sessions to the bottom of the gantt</li>
-            <li>Clicking on the Gantt idem will drilldown to more data.</li>
+            <li>Use the "Planned Sessions" Menu to add your planned sessions to the bottom row of the chart</li>
+            <li>Clicking on a chart item will drilldown to more data at the bottom of the page.</li>
             <li>
             <a target="_blank" href="planned_sessions?form.ownSessions=$form.ownSessions$">Click here to open a new window with your Conference Plan and Export to PDF</a>
           </li>
