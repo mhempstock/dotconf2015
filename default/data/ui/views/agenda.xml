@@ -7,6 +7,20 @@
         <choice value="2015-09-22">Tuesday</choice>
         <choice value="2015-09-23">Wednesday</choice>
         <choice value="2015-09-24">Thursday</choice>
+        <change>
+          <condition value="2015-09-22">
+            <set token="earliest">1442901600</set>
+            <set token="latest">1442948400</set>
+          </condition>
+          <condition value="2015-09-23">
+            <set token="earliest">1442988000</set>
+            <set token="latest">1443034800</set>
+          </condition>
+          <condition value="2015-09-24">
+            <set token="earliest">1443074400</set>
+            <set token="latest">1443121200</set>
+          </condition>
+        </change>
       </input>
       <input type="multiselect" token="skillLevel" searchWhenChanged="true">
         <label>Skill Level</label>
@@ -89,7 +103,6 @@
                      "seriesLabel": "track",
                      "seriesField": "track",
                      "extrasField" : "extra",
-                     "timeAxisMode" : "DATA_RANGE",
                      "tokenName": "Session_ID",
                      "tokenField": "Session_ID"}'/> 
       </html>
@@ -100,8 +113,8 @@
       <table>
         <search id="agenda">
           <query>|inputlookup confSessions | search startDate="$date$"  $skillLevel$ $track$ $products$   | append [|inputlookup confSessions |search startDate="$date$" $ownSessions$| eval type="Own Plan"]  | convert timeformat="%F %H:%M" mktime(startTime) AS _time | convert timeformat="%F %H:%M" mktime(endTime)             | eval duration=endTime-_time | eval extra="{\"title\":\""+title+"\",\"Skill Level\":\""+skillLevel+"\",\"Location\":\""+location+"\"}" | table startTime duration title track type _time extra Session_ID</query>
-          <earliest>0</earliest>
-          <latest></latest>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
         </search>
         <option name="wrap">true</option>
         <option name="rowNumbers">false</option>
@@ -116,8 +129,8 @@
       <table>
         <search>
           <query>|inputlookup confSessions | search Session_ID="$Session_ID$" | table startTime endTime title description  location speakers |makemv speakers delim=";;"</query>
-          <earliest>0</earliest>
-          <latest></latest>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
         </search>
         <option name="wrap">true</option>
         <option name="rowNumbers">false</option>
