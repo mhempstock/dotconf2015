@@ -1,4 +1,5 @@
-<form script="autodiscover.js">&gt;<label>Agenda</label>
+<form script="autodiscover.js" stylesheet="agenda.css">
+  <label>Agenda</label>
   <row>
     <panel>
       <input type="radio" token="date" searchWhenChanged="true">
@@ -66,19 +67,6 @@
         <valueSuffix>*"</valueSuffix>
         <delimiter> AND </delimiter>
       </input>
-      <input type="multiselect" token="ownSessions" searchWhenChanged="true">
-        <label>Planned Sessions</label>
-        <search>
-          <query>|inputlookup confSessions | dedup title</query>
-        </search>
-        <fieldForLabel>title</fieldForLabel>
-        <fieldForValue>Session_ID</fieldForValue>
-        <valuePrefix>Session_ID="</valuePrefix>
-        <valueSuffix>"</valueSuffix>
-        <delimiter> OR </delimiter>
-        <choice value="">None</choice>
-        <default></default>
-      </input>
     </panel>
     <panel>
       <html>
@@ -144,6 +132,23 @@
         <option name="linkView">search</option>
         <option name="count">10</option>
       </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <input type="multiselect" token="ownSessions" searchWhenChanged="true" id="inputown">
+        <label>Planned Sessions</label>
+        <search>
+          <query>|inputlookup confSessions | dedup title</query>
+        </search>
+        <fieldForLabel>title</fieldForLabel>
+        <fieldForValue>Session_ID</fieldForValue>
+        <valuePrefix>Session_ID="</valuePrefix>
+        <valueSuffix>"</valueSuffix>
+        <delimiter> OR </delimiter>
+        <choice value="">None</choice>
+        <default></default>
+      </input>
     </panel>
   </row>
 </form>
