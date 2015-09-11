@@ -67,16 +67,21 @@
         <valueSuffix>*"</valueSuffix>
         <delimiter> AND </delimiter>
       </input>
+            <input type="text" token="sessionPlan">
+        <label>Own Agenda Sessions</label>
+        <default>NonePlanned</default>
+      </input>
     </panel>
     <panel>
       <html>
           <h1>Instructions</h1>
           <ul>
-          <li>Use the filters to view the agenda</li>
-            <li>Use the "Planned Sessions" Menu to add your planned sessions to the bottom row of the chart</li>
-            <li>Clicking on a chart item will drilldown to more data at the bottom of the page.</li>
+          <li>$sessionPlan$ Use the filters to view the agenda</li>
+             <li>Clicking on a chart item will drilldown to a description at the bottom of the page.</li>
+            <li>Clicking on the Description will add it to your Own Agenda</li>
+
             <li>
-            <a target="_blank" href="planned_sessions?form.ownSessions=$form.ownSessions$">Click here to open a new window with your Conference Plan and Export to PDF</a>
+            <a target="_blank" href="planned_sessions?form.ownSessions=$sessionPlan$">Click here to open a new window with your Conference Plan and Export to PDF</a>
           </li>
           </ul>
         <b>If you want to save this page for later copy the URL</b>
@@ -101,11 +106,47 @@
       </html>
     </panel>
   </row>
+
+  <row>
+    <panel depends="$Session_ID$">
+            <title>Click on row to add you your agenda</title>
+      <table>
+        <search>
+          <query>|inputlookup confSessions | search Session_ID="$Session_ID$"  
+          | eval sessionPlan=if(typeof("$sessionPlan$")="Number",toString("$sessionPlan$"),"$sessionPlan$")
+
+          | eval sessionPlan=if(sessionPlan="NonePlanned",
+          $Session_ID$,
+          sessionPlan+","+toString(Session_ID))
+          | table startTime endTime title description  location speakers sessionPlan |makemv speakers delim=";;"</query>
+          <earliest>$earliest$</earliest>
+          <latest>$latest$</latest>
+        </search>
+        <option name="wrap">true</option>
+        <option name="rowNumbers">false</option>
+        <option name="drilldown">row</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="linkView">search</option>
+        <option name="count">10</option>
+        <drilldown>
+            <set token="sessionPlan">$row.sessionPlan$</set>
+            <set token="form.sessionPlan">$row.sessionPlan$</set>
+            <unset token="Session_ID"></unset>
+        </drilldown>
+
+      </table>
+    </panel>
+  </row>
+
   <row>
     <panel depends="$hidden$">
       <table>
         <search id="agenda">
-          <query>|inputlookup confSessions | search startDate="$date$"  $skillLevel$ $track$ $products$   | append [|inputlookup confSessions |search startDate="$date$" $ownSessions$| eval type="Own Plan"]  | convert timeformat="%F %H:%M" mktime(startTime) AS _time | convert timeformat="%F %H:%M" mktime(endTime)             | eval duration=endTime-_time | eval extra="{\"title\":\""+title+"\",\"Skill Level\":\""+skillLevel+"\",\"Location\":\""+location+"\"}" | table startTime duration title track type _time extra Session_ID</query>
+          <query>|inputlookup confSessions | search startDate="$date$"  $skillLevel$ $track$ $products$   | append [|inputlookup confSessions |search startDate="$date$" 
+
+            [|inputlookup confSessions | head 1 |fields |eval Session_ID="$sessionPlan$" |table Session_ID | makemv Session_ID delim="," |mvexpand Session_ID |return 10000 Session_ID] 
+
+            | eval type="Own Plan"]  | convert timeformat="%F %H:%M" mktime(startTime) AS _time | convert timeformat="%F %H:%M" mktime(endTime)             | eval duration=endTime-_time | eval extra="{\"title\":\""+title+"\",\"Skill Level\":\""+skillLevel+"\",\"Location\":\""+location+"\"}" | table startTime duration title track type _time extra Session_ID</query>
           <earliest>$earliest$</earliest>
           <latest>$latest$</latest>
         </search>
@@ -115,40 +156,6 @@
         <option name="drilldown">none</option>
         <option name="count">10</option>
       </table>
-    </panel>
-  </row>
-  <row>
-    <panel depends="$Session_ID$">
-      <table>
-        <search>
-          <query>|inputlookup confSessions | search Session_ID="$Session_ID$" | table startTime endTime title description  location speakers |makemv speakers delim=";;"</query>
-          <earliest>$earliest$</earliest>
-          <latest>$latest$</latest>
-        </search>
-        <option name="wrap">true</option>
-        <option name="rowNumbers">false</option>
-        <option name="drilldown">none</option>
-        <option name="dataOverlayMode">none</option>
-        <option name="linkView">search</option>
-        <option name="count">10</option>
-      </table>
-    </panel>
-  </row>
-  <row>
-    <panel>
-      <input type="multiselect" token="ownSessions" searchWhenChanged="true" id="inputown">
-        <label>Planned Sessions</label>
-        <search>
-          <query>|inputlookup confSessions | dedup title</query>
-        </search>
-        <fieldForLabel>title</fieldForLabel>
-        <fieldForValue>Session_ID</fieldForValue>
-        <valuePrefix>Session_ID="</valuePrefix>
-        <valueSuffix>"</valueSuffix>
-        <delimiter> OR </delimiter>
-        <choice value="">None</choice>
-        <default></default>
-      </input>
     </panel>
   </row>
 </form>
