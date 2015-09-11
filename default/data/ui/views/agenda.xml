@@ -76,7 +76,7 @@
       <html>
           <h1>Instructions</h1>
           <ul>
-          <li>$sessionPlan$ Use the filters to view the agenda</li>
+          <li>Use the filters to view the agenda</li>
              <li>Clicking on a chart item will drilldown to a description at the bottom of the page.</li>
             <li>Clicking on the Description will add it to your Own Agenda</li>
 
