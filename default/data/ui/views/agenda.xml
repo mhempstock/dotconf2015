@@ -67,95 +67,159 @@
         <valueSuffix>*"</valueSuffix>
         <delimiter> AND </delimiter>
       </input>
-            <input type="text" token="sessionPlan">
+      <input type="text" token="sessionPlan">
         <label>Own Agenda Sessions</label>
         <default>NonePlanned</default>
+      </input>  
+    </panel>
+    <panel>
+      <html>
+        <h1>Instructions</h1>
+        <ul>
+          <li>Use the filters to view the agenda</li>
+          <li>Clicking on a chart item will drilldown to a description at the bottom of the page.</li>
+          <li>Clicking on the Description will add it to your Own Agenda</li>
+          <li>Alternatively you can use the filter to show the Agenda Table and click the rows to add to your own agenda.</li>
+        </ul>
+        <br/>
+        <a target="_blank" href="planned_sessions?form.ownSessions=$sessionPlan$">Click here to open a new window with your Own Agenda and Export to PDF</a>
+        <br/>
+        <b>If you want to save this page for later copy the URL</b>
+      </html>
+      <input type="checkbox" token="sat">
+        <label>Show Agenda Table</label>
+        <choice value="">:</choice>
+      </input>
+      <input type="checkbox" token="sac">
+        <label>Show Agenda Chart</label>
+        <choice value="">:</choice>
+        <default></default>
+      </input>
+      <input type="checkbox" token="sss">
+        <label>Show Own Agenda</label>
+        <choice value="">:</choice>
       </input>
     </panel>
-    <panel>
-      <html>
-          <h1>Instructions</h1>
-          <ul>
-          <li>Use the filters to view the agenda</li>
-             <li>Clicking on a chart item will drilldown to a description at the bottom of the page.</li>
-            <li>Clicking on the Description will add it to your Own Agenda</li>
-
-            <li>
-            <a target="_blank" href="planned_sessions?form.ownSessions=$sessionPlan$">Click here to open a new window with your Conference Plan and Export to PDF</a>
-          </li>
-          </ul>
-        <b>If you want to save this page for later copy the URL</b>
-        </html>
-    </panel>
   </row>
   <row>
-    <panel>
-      <html>
-        <p>Click on item to view more details of session</p>
-      <div id="demo-view" class="splunk-view" data-require="app/dotconf2015/components/gantt/gantt" 
-                     data-options='{ "managerid": "agenda",
-                     "startField": "_time",
-                     "durationField": "duration",
-                     "categoryLabel": "type",
-                     "categoryField": "type",
-                     "seriesLabel": "track",
-                     "seriesField": "track",
-                     "extrasField" : "extra",
-                     "tokenName": "Session_ID",
-                     "tokenField": "Session_ID"}'/> 
-      </html>
-    </panel>
+    
   </row>
-
   <row>
-    <panel depends="$Session_ID$">
-            <title>Click on row to add you your agenda</title>
+    <panel depends="$sat$">
+      <title>Agenda - Click to add to your own sessions</title>
       <table>
         <search>
-          <query>|inputlookup confSessions | search Session_ID="$Session_ID$"  
-          | eval sessionPlan=if(typeof("$sessionPlan$")="Number",toString("$sessionPlan$"),"$sessionPlan$")
-
-          | eval sessionPlan=if(sessionPlan="NonePlanned",
-          $Session_ID$,
-          sessionPlan+","+toString(Session_ID))
-          | table startTime endTime title description  location speakers sessionPlan |makemv speakers delim=";;"</query>
-          <earliest>$earliest$</earliest>
-          <latest>$latest$</latest>
-        </search>
-        <option name="wrap">true</option>
-        <option name="rowNumbers">false</option>
-        <option name="drilldown">row</option>
-        <option name="dataOverlayMode">none</option>
-        <option name="linkView">search</option>
-        <option name="count">10</option>
-        <drilldown>
+          <query>|inputlookup confSessions 
+            | search startDate="$date$"  $skillLevel$ $track$ $products$ 
+            | eval sessionPlan=if(typeof("$sessionPlan$")="Number",toString("$sessionPlan$"),"$sessionPlan$")
+            | eval sessionPlan=if(sessionPlan="NonePlanned",
+            Session_ID,
+            sessionPlan+","+toString(Session_ID))
+            | table startTime endTime title description  location speakers sessionPlan |makemv speakers delim=";;"
+            | sort 0 startTime</query>
+            <earliest>$earliest$</earliest>
+            <latest>$latest$</latest>
+          </search>
+          <option name="wrap">true</option>
+          <option name="rowNumbers">false</option>
+          <option name="drilldown">row</option>
+          <option name="dataOverlayMode">none</option>
+          <option name="linkView">search</option>
+          <option name="count">10</option>
+          <drilldown>
             <set token="sessionPlan">$row.sessionPlan$</set>
             <set token="form.sessionPlan">$row.sessionPlan$</set>
-            <unset token="Session_ID"></unset>
-        </drilldown>
+          </drilldown>
 
-      </table>
-    </panel>
-  </row>
+        </table>
+      </panel>
+    </row>
+    <row>
+      <panel depends="$sss$">
+        <table>
+          <search>
+            <query>|inputlookup confSessions |search [|gentimes start=-1  |fields |eval Session_ID="$sessionPlan$" |table Session_ID | makemv Session_ID delim="," |mvexpand Session_ID |return 10000 Session_ID] | table startTime endTime title description  location speakers |makemv speakers delim=";;" | sort 0 - startTime</query>
+            <earliest>$earliest$</earliest>
+            <latest>$latest$</latest>
+          </search>
+          <option name="wrap">true</option>
+          <option name="rowNumbers">false</option>
+          <option name="drilldown">row</option>
+          <option name="dataOverlayMode">none</option>
+          <option name="linkView">search</option>
+          <option name="count">10</option>
+        </table>
 
-  <row>
-    <panel depends="$hidden$">
-      <table>
-        <search id="agenda">
-          <query>|inputlookup confSessions | search startDate="$date$"  $skillLevel$ $track$ $products$   | append [|inputlookup confSessions |search startDate="$date$" 
 
-            [|inputlookup confSessions | head 1 |fields |eval Session_ID="$sessionPlan$" |table Session_ID | makemv Session_ID delim="," |mvexpand Session_ID |return 10000 Session_ID] 
+      </panel>
+    </row>
+    <row>
+      <panel depends="$sac$">
+        <html>
+          <p>Click on item to view more details of session</p>
+          <div id="demo-view" class="splunk-view" data-require="app/dotconf2015/components/gantt/gantt" 
+           data-options='{ "managerid": "agenda",
+           "startField": "_time",
+           "durationField": "duration",
+           "categoryLabel": "type",
+           "categoryField": "type",
+           "seriesLabel": "track",
+           "seriesField": "track",
+           "extrasField" : "extra",
+           "tokenName": "Session_ID",
+           "tokenField": "Session_ID"}'/> 
+         </html>
+       </panel>
+     </row>
 
-            | eval type="Own Plan"]  | convert timeformat="%F %H:%M" mktime(startTime) AS _time | convert timeformat="%F %H:%M" mktime(endTime)             | eval duration=endTime-_time | eval extra="{\"title\":\""+title+"\",\"Skill Level\":\""+skillLevel+"\",\"Location\":\""+location+"\"}" | table startTime duration title track type _time extra Session_ID</query>
-          <earliest>$earliest$</earliest>
-          <latest>$latest$</latest>
-        </search>
-        <option name="wrap">true</option>
-        <option name="rowNumbers">false</option>
-        <option name="dataOverlayMode">none</option>
-        <option name="drilldown">none</option>
-        <option name="count">10</option>
-      </table>
-    </panel>
-  </row>
-</form>
+     <row>
+      <panel depends="$Session_ID$">
+        <title>Click on row to add you your agenda</title>
+        <table>
+          <search>
+            <query>|inputlookup confSessions | search Session_ID="$Session_ID$"  
+              | eval sessionPlan=if(typeof("$sessionPlan$")="Number",toString("$sessionPlan$"),"$sessionPlan$")
+
+              | eval sessionPlan=if(sessionPlan="NonePlanned",
+              $Session_ID$,
+              sessionPlan+","+toString(Session_ID))
+              | table startTime endTime title description  location speakers sessionPlan |makemv speakers delim=";;"</query>
+              <earliest>$earliest$</earliest>
+              <latest>$latest$</latest>
+            </search>
+            <option name="wrap">true</option>
+            <option name="rowNumbers">false</option>
+            <option name="drilldown">row</option>
+            <option name="dataOverlayMode">none</option>
+            <option name="linkView">search</option>
+            <option name="count">10</option>
+            <drilldown>
+              <set token="sessionPlan">$row.sessionPlan$</set>
+              <set token="form.sessionPlan">$row.sessionPlan$</set>
+              <unset token="Session_ID"></unset>
+            </drilldown>
+
+          </table>
+        </panel>
+      </row>
+
+      <row>
+        <panel depends="$hidden$">
+          <table>
+            <search id="agenda">
+              <query>|inputlookup confSessions | search startDate="$date$"  $skillLevel$ $track$ $products$   | append [|inputlookup confSessions |search startDate="$date$" 
+                [|gentimes start=-1 |fields |eval Session_ID="$sessionPlan$" |table Session_ID | makemv Session_ID delim="," |mvexpand Session_ID |return 10000 Session_ID] 
+
+                | eval type="Own Plan"]  | convert timeformat="%F %H:%M" mktime(startTime) AS _time | convert timeformat="%F %H:%M" mktime(endTime)             | eval duration=endTime-_time | eval extra="{\"title\":\""+title+"\",\"Skill Level\":\""+skillLevel+"\",\"Location\":\""+location+"\"}" | table startTime duration title track type _time extra Session_ID</query>
+                <earliest>$earliest$</earliest>
+                <latest>$latest$</latest>
+              </search>
+              <option name="wrap">true</option>
+              <option name="rowNumbers">false</option>
+              <option name="dataOverlayMode">none</option>
+              <option name="drilldown">none</option>
+              <option name="count">10</option>
+            </table>
+          </panel>
+        </row>
+      </form>
