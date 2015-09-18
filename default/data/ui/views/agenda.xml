@@ -11,19 +11,19 @@
         <choice value="*">All Days</choice>
         <change>
           <condition value="2015-09-22">
-            <set token="earliest">1442901600</set>
+            <set token="earliest">1442898000</set>
             <set token="latest">1442948400</set>
           </condition>
           <condition value="2015-09-23">
-            <set token="earliest">1442988000</set>
+            <set token="earliest">1442984400</set>
             <set token="latest">1443034800</set>
           </condition>
           <condition value="2015-09-24">
-            <set token="earliest">1443074400</set>
+            <set token="earliest">1443070800</set>
             <set token="latest">1443121200</set>
           </condition>
           <condition value="*">
-            <set token="earliest">1442901600</set>
+            <set token="earliest">1442898000</set>
             <set token="latest">1443121200</set>
           </condition>
         </change>
@@ -74,7 +74,10 @@
     </panel>
     <panel>
       <html>
-        <h1>Instructions</h1>
+        <h1>Introduction</h1>
+        <p>This was created just for fun you can read my blog about why I did it here <a href="blank">Splunking the Splunk Conference Agenda</a><br/>
+        <font color="red">I am no way affiliated with Splunk and I can not guarantee the accuracy of the data.</font>  The data source was developed by scraping <a href="https://conf.splunk.com">https://conf.splunk.com</a> and the conference signup page. </p> 
+        <h1>Notes</h1>
         <ul>
           <li>Use the filters to view the agenda</li>
           <li>Clicking on a chart item will drilldown to a description at the bottom of the page.</li>
@@ -86,7 +89,11 @@
         <br/>
         <b>If you want to save this page for later copy the URL</b>
       </html>
-      <input type="checkbox" token="sat">
+    </panel>
+  </row>
+  <row>
+    <panel>
+       <input type="checkbox" token="sat">
         <label>Show Agenda Table</label>
         <choice value="">:</choice>
       </input>
@@ -100,8 +107,8 @@
         <choice value="">:</choice>
       </input>
     </panel>
-  </row>
-  <row>
+    <panel>
+    </panel>
 
   </row>
   <row>
@@ -180,9 +187,7 @@
             <query>|inputlookup confSessions | search Session_ID="$Session_ID$"  
               | eval sessionPlan=if(typeof("$sessionPlan$")="Number",toString("$sessionPlan$"),"$sessionPlan$")
 
-              | eval sessionPlan=if(sessionPlan="NonePlanned",
-              $Session_ID$,
-              sessionPlan+","+toString(Session_ID))
+              | eval sessionPlan=if("$sessionPlan$"="NonePlanned",Session_ID,sessionPlan+","+toString(Session_ID))
               | table startTime endTime title description  location speakers sessionPlan |makemv speakers delim=";;"</query>
               <earliest>$earliest$</earliest>
               <latest>$latest$</latest>
@@ -210,7 +215,7 @@
               <query>|inputlookup confSessions | search startDate="$date$"  $skillLevel$ $track$ $products$   | append [|inputlookup confSessions |search startDate="$date$" 
                 [|gentimes start=-1 |fields |eval Session_ID="$sessionPlan$" |table Session_ID | makemv Session_ID delim="," |mvexpand Session_ID |return 10000 Session_ID] 
 
-                | eval type="Own Plan"]  | convert timeformat="%F %H:%M" mktime(startTime) AS _time | convert timeformat="%F %H:%M" mktime(endTime)             | eval duration=endTime-_time | eval extra="{\"title\":\""+title+"\",\"Skill Level\":\""+skillLevel+"\",\"Location\":\""+location+"\"}" | table startTime duration title track type _time extra Session_ID</query>
+                | eval type="~Own Plan"]  | convert timeformat="%F %H:%M" mktime(startTime) AS _time | convert timeformat="%F %H:%M" mktime(endTime)             | eval duration=endTime-_time | eval extra="{\"title\":\""+title+"\",\"Skill Level\":\""+skillLevel+"\",\"Location\":\""+location+"\"}" | table startTime duration title track type _time extra Session_ID</query>
                 <earliest>$earliest$</earliest>
                 <latest>$latest$</latest>
               </search>
