@@ -107,13 +107,31 @@
         <choice value="">:</choice>
       </input>
     </panel>
-    <panel>
-    </panel>
+
+      <panel depends="$sss$">
+        <title>Own Agenda</title>
+        <table>
+          <search>
+            <query>|inputlookup confSessions |search [|gentimes start=-1  |fields |eval Session_ID="$sessionPlan$" |table Session_ID | makemv Session_ID delim="," |mvexpand Session_ID |return 10000 Session_ID] | table startTime endTime title location speakers |makemv speakers delim=";;" | sort 0 - startTime</query>
+            <earliest>$earliest$</earliest>
+            <latest>$latest$</latest>
+          </search>
+          <option name="wrap">true</option>
+          <option name="rowNumbers">false</option>
+          <option name="drilldown">row</option>
+          <option name="dataOverlayMode">none</option>
+          <option name="linkView">search</option>
+          <option name="count">10</option>
+        </table>
+
+
+      </panel>
+
 
   </row>
   <row>
     <panel depends="$sat$">
-      <title>Agenda - Click to add to your own sessions</title>
+      <title>Agenda - Click a row to add to your own sessions</title>
       <table>
         <search>
           <query>|inputlookup confSessions 
@@ -141,25 +159,7 @@
         </table>
       </panel>
     </row>
-    <row>
-      <panel depends="$sss$">
-        <table>
-          <search>
-            <query>|inputlookup confSessions |search [|gentimes start=-1  |fields |eval Session_ID="$sessionPlan$" |table Session_ID | makemv Session_ID delim="," |mvexpand Session_ID |return 10000 Session_ID] | table startTime endTime title description  location speakers |makemv speakers delim=";;" | sort 0 - startTime</query>
-            <earliest>$earliest$</earliest>
-            <latest>$latest$</latest>
-          </search>
-          <option name="wrap">true</option>
-          <option name="rowNumbers">false</option>
-          <option name="drilldown">row</option>
-          <option name="dataOverlayMode">none</option>
-          <option name="linkView">search</option>
-          <option name="count">10</option>
-        </table>
 
-
-      </panel>
-    </row>
     <row>
       <panel depends="$sac$">
         <html>
