@@ -75,8 +75,10 @@
     <panel>
       <html>
         <h1>Introduction</h1>
-        <p>This was created just for fun you can read my blog about why I did it here <a href="blank">Splunking the Splunk Conference Agenda</a><br/>
-        <font color="red">I am no way affiliated with Splunk and I can not guarantee the accuracy of the data.</font>  The data source was developed by scraping <a href="https://conf.splunk.com">https://conf.splunk.com</a> and the conference signup page. </p> 
+        <p>This was created just for fun you can read my blog about why I did it here <a target="_blank" href="https://www.linkedin.com/pulse/splunking-splunk-conference-agenda-martin-hempstock">Splunking the Splunk Conference Agenda</a><br/>
+        <font color="red">I am no way affiliated with Splunk and I can not guarantee the accuracy of the data.</font>  The data source was developed by scraping <a target="_blank" href="https://conf.splunk.com">https://conf.splunk.com</a> and the conference signup page.<br/>
+        For bug visit <a  target="_blank" href="https://github.com/stash1001/dotconf2015/">https://github.com/stash1001/dotconf2015/</a> or email me
+        <a target="_blank" href="mailto:martin@hempstock.it">martin@hempstock.it</a></p> 
         <h1>Notes</h1>
         <ul>
           <li>Use the filters to view the agenda</li>
