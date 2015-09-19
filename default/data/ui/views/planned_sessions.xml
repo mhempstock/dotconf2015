@@ -10,7 +10,7 @@
       <title>Planned Sessions</title>
       <table>
         <search>
-          <query>|inputlookup confSessions |search [search index=* | head 1 |fields |eval Session_ID="$ownSessions$" |table Session_ID | makemv Session_ID delim="," |mvexpand Session_ID |return 10000 Session_ID]
+          <query>|inputlookup confSessions |search [gentimes start=-1 |eval Session_ID="$ownSessions$" |table Session_ID | makemv Session_ID delim="," |mvexpand Session_ID |return 10000 Session_ID]
 | table startTime endTime title description  location speakers |makemv speakers delim=";;" | sort 0 - startTime</query>
           <earliest>0</earliest>
           <latest></latest>
